@@ -171,11 +171,18 @@ export default function Home() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">Redesign Your Life</h1>
-          <p className="text-gray-600 mb-6">100-day transformation program with AI coaching</p>
-          <button onClick={loginWithGoogle} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] flex items-center justify-center p-4">
+        <div className="bg-[#1a1a1a] p-8 rounded-2xl shadow-2xl border border-[#7c3aed]/20 text-center max-w-md w-full">
+          <div className="mb-6">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-[#7c3aed] to-[#f59e0b] bg-clip-text text-transparent mb-2">
+              Redesign Your Life
+            </h1>
+            <p className="text-gray-400 text-lg">100-day transformation program with AI coaching</p>
+          </div>
+          <button
+            onClick={loginWithGoogle}
+            className="w-full bg-gradient-to-r from-[#7c3aed] to-[#9333ea] hover:from-[#9333ea] hover:to-[#7c3aed] text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-[#7c3aed]/25"
+          >
             Login with Google
           </button>
         </div>
@@ -186,131 +193,274 @@ export default function Home() {
   const completedDays = Object.values(habits).filter(Boolean).length;
   const currentDay = Math.max(...Object.keys(habits).map(Number), 1);
   const streak = calculateStreak();
+  const completionPercent = Math.round((completedDays / 100) * 100);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Redesign Your Life</h1>
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
+      {/* Header */}
+      <header className="bg-[#1a1a1a] border-b border-[#7c3aed]/20 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#7c3aed] to-[#f59e0b] bg-clip-text text-transparent">
+              Redesign Your Life
+            </h1>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Day {currentDay} • Streak: {streak}</span>
-              <button onClick={logout} className="text-gray-600 hover:text-gray-900">Logout</button>
+              <div className="bg-gradient-to-r from-[#f59e0b] to-[#d97706] text-black px-4 py-2 rounded-full font-semibold shadow-lg">
+                🔥 {streak} Day Streak
+              </div>
+              <button
+                onClick={logout}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Logout
+              </button>
             </div>
           </div>
-        </div>
-      </header>
 
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
+          {/* Tab Navigation */}
+          <nav className="flex space-x-2">
             {['Home', 'Chat', 'Progress', 'Profile'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   currentTab === tab
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-gradient-to-r from-[#7c3aed] to-[#9333ea] text-white shadow-lg shadow-[#7c3aed]/25'
+                    : 'bg-[#2a2a2a] text-gray-400 hover:text-white hover:bg-[#3a3a3a]'
                 }`}
               >
                 {tab}
               </button>
             ))}
-          </div>
+          </nav>
         </div>
-      </nav>
+      </header>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto p-6">
         {currentTab === 'Home' && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">100-Day Habit Tracker</h2>
-            <div className="grid grid-cols-10 gap-2">
-              {Array.from({ length: 100 }, (_, i) => i + 1).map(day => (
-                <button
-                  key={day}
-                  onClick={() => toggleHabit(day)}
-                  className={`w-10 h-10 rounded ${
-                    habits[day] ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'
-                  }`}
-                >
-                  {day}
-                </button>
-              ))}
+          <div className="space-y-8">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#7c3aed]/20">
+                <div className="text-3xl font-bold text-[#7c3aed] mb-2">Day {currentDay}</div>
+                <div className="text-gray-400">Current Day</div>
+              </div>
+              <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#7c3aed]/20">
+                <div className="text-3xl font-bold text-[#f59e0b] mb-2">{streak}</div>
+                <div className="text-gray-400">Day Streak</div>
+              </div>
+              <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#7c3aed]/20">
+                <div className="text-3xl font-bold text-[#7c3aed] mb-2">{completionPercent}%</div>
+                <div className="text-gray-400">Completed</div>
+              </div>
+            </div>
+
+            {/* 100-Day Grid */}
+            <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#7c3aed]/20">
+              <h2 className="text-xl font-semibold mb-6 text-center">100-Day Habit Tracker</h2>
+              <div className="grid grid-cols-10 gap-3 max-w-2xl mx-auto">
+                {Array.from({ length: 100 }, (_, i) => i + 1).map(day => (
+                  <button
+                    key={day}
+                    onClick={() => toggleHabit(day)}
+                    className={`aspect-square rounded-lg border-2 transition-all duration-300 ${
+                      habits[day]
+                        ? 'bg-[#7c3aed] border-[#7c3aed] shadow-lg shadow-[#7c3aed]/25'
+                        : day === currentDay
+                        ? 'bg-[#f59e0b] border-[#f59e0b] shadow-lg shadow-[#f59e0b]/25 animate-pulse'
+                        : 'bg-[#2a2a2a] border-[#3a3a3a] hover:border-[#7c3aed]/50'
+                    }`}
+                  >
+                    <span className={`text-xs font-semibold ${
+                      habits[day] || day === currentDay ? 'text-white' : 'text-gray-500'
+                    }`}>
+                      {day}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {currentTab === 'Chat' && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">AI Life Coach</h2>
+          <div className="bg-[#1a1a1a] rounded-2xl border border-[#7c3aed]/20 h-[600px] flex flex-col">
+            {/* Chat Header */}
+            <div className="p-6 border-b border-[#7c3aed]/20">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-[#7c3aed] to-[#9333ea] rounded-full flex items-center justify-center">
+                  <span className="text-white font-semibold">Z</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Zara - AI Life Coach</h3>
+                  <p className="text-sm text-gray-400">Your personal transformation guide</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 p-6 overflow-y-auto space-y-4">
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+                    msg.role === 'user'
+                      ? 'bg-gradient-to-r from-[#7c3aed] to-[#9333ea] text-white'
+                      : 'bg-[#2a2a2a] text-gray-200 border border-[#7c3aed]/20'
+                  }`}>
+                    {msg.content}
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-[#2a2a2a] px-4 py-3 rounded-2xl border border-[#7c3aed]/20">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-[#7c3aed] rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-[#7c3aed] rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-2 h-2 bg-[#7c3aed] rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Paywall Message */}
             {!isSubscribed && chatCount >= 3 && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded p-4 mb-4">
-                <p className="text-yellow-800">You've used {chatCount} free chats. Subscribe for ₹149/month to continue.</p>
-                <button onClick={initiatePayment} className="mt-2 bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+              <div className="mx-6 mb-4 bg-gradient-to-r from-[#f59e0b] to-[#d97706] text-black p-4 rounded-xl">
+                <p className="font-semibold mb-2">You've used {chatCount} free chats</p>
+                <p className="text-sm mb-3">Subscribe for ₹149/month to continue chatting with Zara</p>
+                <button
+                  onClick={initiatePayment}
+                  className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+                >
                   Subscribe Now
                 </button>
               </div>
             )}
-            <div className="bg-white rounded-lg shadow p-4 h-96 overflow-y-auto mb-4">
-              {chatMessages.map((msg, i) => (
-                <div key={i} className={`mb-2 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
-                  <span className={`inline-block p-2 rounded ${msg.role === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}>
-                    {msg.content}
-                  </span>
-                </div>
-              ))}
-              {isLoading && <div className="text-center">Typing...</div>}
-            </div>
-            <div className="flex">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && sendChat()}
-                className="flex-1 border rounded-l px-3 py-2"
-                placeholder="Ask your AI coach..."
-                disabled={!isSubscribed && chatCount >= 3}
-              />
-              <button onClick={sendChat} className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700" disabled={!isSubscribed && chatCount >= 3}>
-                Send
-              </button>
+
+            {/* Chat Input */}
+            <div className="p-6 border-t border-[#7c3aed]/20">
+              <div className="flex space-x-3">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && sendChat()}
+                  className="flex-1 bg-[#2a2a2a] border border-[#7c3aed]/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]"
+                  placeholder="Ask Zara for advice..."
+                  disabled={!isSubscribed && chatCount >= 3}
+                />
+                <button
+                  onClick={sendChat}
+                  disabled={!isSubscribed && chatCount >= 3}
+                  className="bg-gradient-to-r from-[#7c3aed] to-[#9333ea] hover:from-[#9333ea] hover:to-[#7c3aed] text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-[#7c3aed]/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Send
+                </button>
+              </div>
             </div>
           </div>
         )}
 
         {currentTab === 'Progress' && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Your Progress</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h3 className="font-semibold">Completed Days</h3>
-                <p className="text-2xl">{completedDays}/100</p>
+          <div className="space-y-8">
+            {/* Overall Progress */}
+            <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#7c3aed]/20">
+              <h2 className="text-xl font-semibold mb-6">Your Progress</h2>
+              <div className="space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span>Overall Completion</span>
+                  <span>{completedDays}/100 days</span>
+                </div>
+                <div className="w-full bg-[#2a2a2a] rounded-full h-4">
+                  <div
+                    className="bg-gradient-to-r from-[#7c3aed] to-[#9333ea] h-4 rounded-full transition-all duration-500"
+                    style={{ width: `${completionPercent}%` }}
+                  ></div>
+                </div>
+                <div className="text-center text-2xl font-bold text-[#7c3aed]">{completionPercent}% Complete</div>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h3 className="font-semibold">Current Streak</h3>
-                <p className="text-2xl">{streak} days</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h3 className="font-semibold">Chat Count</h3>
-                <p className="text-2xl">{chatCount}</p>
-              </div>
+            </div>
+
+            {/* Weekly Breakdown */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Array.from({ length: 10 }, (_, week) => {
+                const weekStart = week * 10 + 1;
+                const weekEnd = Math.min((week + 1) * 10, 100);
+                const weekCompleted = Array.from({ length: 10 }, (_, i) => weekStart + i)
+                  .filter(day => habits[day]).length;
+                const weekPercent = Math.round((weekCompleted / 10) * 100);
+
+                return (
+                  <div key={week} className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#7c3aed]/20">
+                    <h3 className="font-semibold mb-3">Week {week + 1}</h3>
+                    <div className="text-sm text-gray-400 mb-2">Days {weekStart}-{weekEnd}</div>
+                    <div className="w-full bg-[#2a2a2a] rounded-full h-2 mb-2">
+                      <div
+                        className="bg-gradient-to-r from-[#f59e0b] to-[#d97706] h-2 rounded-full"
+                        style={{ width: `${weekPercent}%` }}
+                      ></div>
+                    </div>
+                    <div className="text-sm">{weekCompleted}/10 days • {weekPercent}%</div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
 
         {currentTab === 'Profile' && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Profile</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-              <p><strong>Email:</strong> {user.email}</p>
-              <p><strong>Subscription:</strong> {isSubscribed ? 'Active' : 'Inactive'}</p>
-              <p><strong>Chat Count:</strong> {chatCount}</p>
+          <div className="max-w-md mx-auto">
+            <div className="bg-[#1a1a1a] p-8 rounded-2xl border border-[#7c3aed]/20 text-center">
+              {/* Avatar */}
+              <div className="w-24 h-24 bg-gradient-to-r from-[#7c3aed] to-[#9333ea] rounded-full mx-auto mb-6 flex items-center justify-center">
+                <span className="text-3xl font-bold text-white">
+                  {user.email?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+
+              {/* User Info */}
+              <h2 className="text-xl font-semibold mb-2">{user.email}</h2>
+              <div className="mb-6">
+                <span className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${
+                  isSubscribed
+                    ? 'bg-gradient-to-r from-[#f59e0b] to-[#d97706] text-black'
+                    : 'bg-[#2a2a2a] text-gray-400'
+                }`}>
+                  {isSubscribed ? 'Premium Member' : 'Free Plan'}
+                </span>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-[#2a2a2a] p-4 rounded-xl">
+                  <div className="text-2xl font-bold text-[#7c3aed]">{chatCount}</div>
+                  <div className="text-sm text-gray-400">Chats Used</div>
+                </div>
+                <div className="bg-[#2a2a2a] p-4 rounded-xl">
+                  <div className="text-2xl font-bold text-[#f59e0b]">{completedDays}</div>
+                  <div className="text-sm text-gray-400">Days Completed</div>
+                </div>
+              </div>
+
+              {/* Subscribe Button */}
               {!isSubscribed && (
-                <button onClick={initiatePayment} className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                  Subscribe for ₹149/month
+                <button
+                  onClick={initiatePayment}
+                  className="w-full bg-gradient-to-r from-[#7c3aed] to-[#9333ea] hover:from-[#9333ea] hover:to-[#7c3aed] text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-[#7c3aed]/25 mb-4"
+                >
+                  Upgrade to Premium - ₹149/month
                 </button>
               )}
+
+              {/* Logout */}
+              <button
+                onClick={logout}
+                className="w-full bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-400 hover:text-white py-3 px-6 rounded-xl transition-colors"
+              >
+                Logout
+              </button>
             </div>
           </div>
         )}
