@@ -1,15 +1,35 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 const FREE_CHAT_LIMIT = 3;
 
 export async function POST(req) {
   try {
+    // Check for required environment variables
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error("Missing Supabase environment variables");
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    if (!anthropicApiKey) {
+      console.error("Missing Anthropic API key");
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    // Validate Supabase URL format
+    try {
+      new URL(supabaseUrl);
+    } catch {
+      console.error("Invalid Supabase URL format");
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
     const { messages, userId, currentDay, completedDays, streak } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
@@ -23,6 +43,11 @@ export async function POST(req) {
         .eq("id", userId)
         .single();
 
+      if (error) {
+        console.error("Supabase error:", error);
+        return NextResponse.json({ error: "Database error" }, { status: 500 });
+      }
+
       const chatCount = user?.chat_count ?? 0;
       const isSubscribed = user?.is_subscribed ?? false;
 
@@ -35,16 +60,24 @@ export async function POST(req) {
 
       if (!isSubscribed) {
         if (user) {
-          await supabase
+          const { error: updateError } = await supabase
             .from("users")
             .update({ chat_count: chatCount + 1 })
             .eq("id", userId);
+          if (updateError) {
+            console.error("Update error:", updateError);
+            return NextResponse.json({ error: "Database error" }, { status: 500 });
+          }
         } else {
-          await supabase.from("users").insert({
+          const { error: insertError } = await supabase.from("users").insert({
             id: userId,
             chat_count: 1,
             is_subscribed: false,
           });
+          if (insertError) {
+            console.error("Insert error:", insertError);
+            return NextResponse.json({ error: "Database error" }, { status: 500 });
+          }
         }
       }
     }
@@ -53,7 +86,7 @@ export async function POST(req) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "x-api-key": anthropicApiKey,
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
@@ -67,12 +100,17 @@ export async function POST(req) {
       }),
     });
 
+    if (!response.ok) {
+      console.error("Anthropic API error:", response.status, response.statusText);
+      return NextResponse.json({ error: "AI service unavailable" }, { status: 500 });
+    }
+
     const data = await response.json();
     const reply = data.content?.[0]?.text ?? "Kuch problem ho gayi. Dobara try karo 🙏";
     return NextResponse.json({ reply });
 
   } catch (err) {
-    console.error(err);
+    console.error("Unexpected error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
